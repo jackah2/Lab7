@@ -14,28 +14,28 @@ public class Colosseum {
     /**
      * The maximum number of hit points we will allow a Pokemon to start with.
      */
-    static final int MAX_HIT_POINTS = 50;
+    private static final int MAX_HIT_POINTS = 50;
 
     /**
      * The maximum number of rounds we will let the Pokemon battle.
      */
-    static final int MAX_NUM_ROUNDS = 10;
+    private static final int MAX_NUM_ROUNDS = 10;
 
     /**
      * The first Pokemon we will be fighting.
      */
-    static Pokemon firstPokemon;
+    private static Pokemon firstPokemon;
 
     /**
      * The second Pokemon we will be fighting.
      */
-    static Pokemon secondPokemon;
+    private static Pokemon secondPokemon;
 
     /**
      * Input scanner. Use this to take in user's input for buildPokemon(). <br>
      * Useful functions: next(), nextInt() .
      */
-    static Scanner myScan;
+    private static Scanner myScan;
 
     /**
      * How we will build our Pokemon to battle.
@@ -44,7 +44,7 @@ public class Colosseum {
      * <p>
      * Requirements we should check the user for: <br>
      * - Hit points are between 1 and MAX_HIT_POINTS <br>
-     * - No more than 50 points are split between attack level and defense leve <br>
+     * - No more than 50 points are split between attack level and defense level <br>
      * - Attack level and defense level must have at least 1 point each <br>
      * Example of how this will look to the user:
      * <p>
@@ -73,8 +73,39 @@ public class Colosseum {
      *         Implement this function.
      */
     public static Pokemon buildPokemon() {
-        Pokemon tempPokemon = new Pokemon();
-        return tempPokemon;
+        Pokemon poke = new Pokemon();
+
+        System.out.print("Please name your Pokemon: ");
+        poke.name = myScan.nextLine();
+
+        System.out.print("\nHow many hit points will it have? (1-50): ");
+        int hitPoints = myScan.nextInt();
+        while (hitPoints < 1 || hitPoints > MAX_HIT_POINTS) {
+            System.out.print("\nSorry. Hit points must be between 1 and 50: ");
+            hitPoints = myScan.nextInt();
+        }
+        poke.hitPoints = hitPoints;
+
+        System.out.println("\nSplit fifty points between attack level and defense level");
+        System.out.print("Enter your attack level (1-49): ");
+        int attack = myScan.nextInt();
+        while (attack < 1 || attack > MAX_HIT_POINTS - 1) {
+            System.out.print("\nSorry. Your attack level must be between 1 and 49: ");
+            attack = myScan.nextInt();
+        }
+        poke.attackLevel = attack;
+
+        int posDef = MAX_HIT_POINTS - attack;
+
+        System.out.print("\nEnter your defense level (1-" + posDef + "): ");
+        int defense = myScan.nextInt();
+        while (defense < 1 || defense > posDef) {
+            System.out.print("\nSorry. The defense level must be between 1 and " + posDef + ": ");
+            defense = myScan.nextInt();
+        }
+        poke.defenseLevel = defense;
+
+        return poke;
     }
 
     /**
@@ -91,7 +122,13 @@ public class Colosseum {
      * Implement this function.
      */
     public static void printWhoIsAhead() {
-        System.out.println("Implement me!");
+        if (firstPokemon.hitPoints > secondPokemon.hitPoints) {
+            System.out.println(firstPokemon.name + " is currently ahead!");
+        } else if (secondPokemon.hitPoints > firstPokemon.hitPoints) {
+            System.out.println(secondPokemon.name + " is currently ahead!");
+        } else {
+            System.out.println("There is currently a tie!");
+        }
     }
 
     /**
@@ -102,7 +139,11 @@ public class Colosseum {
      * Write this function.
      */
     public static void determineWinner() {
-        System.out.println("Implement me!");
+        if (firstPokemon.hitPoints <= 0) {
+            System.out.println(secondPokemon.name + " wins!");
+        } else if (secondPokemon.hitPoints <= 0) {
+            System.out.println(firstPokemon.name + " wins!");
+        }
     }
 
     /**
@@ -112,16 +153,15 @@ public class Colosseum {
      */
     public static void initializePokemon() {
         System.out.println("Player 1, build your Pokemon!");
-        System.out.println("=================");
+        System.out.println("=============================");
         firstPokemon = buildPokemon();
-        firstPokemon.name = "Chuchu";
 
-        System.out.println("");
+        System.out.println("\n\n");
+        myScan.nextLine();
 
         System.out.println("Player 2, build your Pokemon!");
-        System.out.println("==================");
+        System.out.println("=============================");
         secondPokemon = buildPokemon();
-        secondPokemon.name = "Xyz";
     }
 
     /**
@@ -171,7 +211,7 @@ public class Colosseum {
          */
         for (int i = 0; i < MAX_NUM_ROUNDS && !ifWinner; i++) {
             System.out.println("");
-            System.out.println("Round " + (i + 1) + "!");
+            System.out.println("---------- Round " + (i + 1) + "! ----------");
             System.out.println("");
 
             ifWinner = firstPokemon.attack(secondPokemon);
@@ -183,7 +223,7 @@ public class Colosseum {
 
             }
         }
-        System.out.println("");
+        System.out.println("--------------------");
 
         if (!ifWinner) {
             System.out.println("It's a tie!");
